@@ -1,5 +1,3 @@
-import java.time.temporal.ValueRange;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,14 +19,14 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
 
         MapNode<K, V> newNode = new MapNode<>(key, value);
-        int index = newNode.hashFnction(hashTable.length);
+        int index = hashFunction(hashTable.length, newNode.getKey());
         if (hashTable[index] == null) {
             return simplePutting(index , newNode);
         }
 
         List<MapNode<K, V>> nodeList = hashTable[index].getNodes();
-        for(MapNode<K, V> k : nodeList){
-            if(keyExistButValueNew(k, newNode, value) || collisionSolving(k,newNode,nodeList)){
+        for(MapNode<K, V> nodeFromList : nodeList){
+            if(keyExistButValueNew(nodeFromList, newNode, value) || collisionSolving(nodeFromList,newNode,nodeList)){
                 return true;
             }
         }
@@ -48,8 +46,16 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
     }
 
+    private int hashFunction(int tableLength, K key){
+        int result = 31;
+        int prime = 7;
+        result = result * prime + key.hashCode();
+        return result % tableLength;
+    }
+
     private boolean simplePutting(int index, MapNode<K, V> newNode){
-        hashTable[index] = newNode; // TODO Chek is your variant do the same !!!
+        hashTable[index] = new MapNode<>(null, null);
+        hashTable[index].getNodes().add(newNode);
         size++;
         return true;
     }
@@ -57,7 +63,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     private boolean keyExistButValueNew(final MapNode<K, V> nodeFromList,
                                        final MapNode<K, V> newNode,
                                        V value){
-        if(newNode.getKey().equals(nodeFromList) && !newNode.getValue().equals(nodeFromList.getValue())){
+        if(newNode.getKey().equals(nodeFromList.getKey()) && !newNode.getValue().equals(nodeFromList.getValue())){
             nodeFromList.setValue(value);
             return true;
         }
@@ -79,11 +85,41 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
     @Override
     public V get(K key) {
+        int index = hashFunction(hashTable.length, key);
+        if(hashTable[index] != null){
+            List<MapNode<K, V>> nodeList = hashTable[index].getNodes();
+            for(MapNode<K, V> currentNode : nodeList){
+                if(currentNode.getKey().equals(key)) {
+                    return currentNode.getValue();
+                }
+            }
+        }
+
         return null;
     }
 
     @Override
     public boolean delete(K key) {
+        int index = hashFunction(hashTable.length, key);
+        if(hashTable[index] == null){
+            return false;
+        }
+
+        if(hashTable[index].getNodes().size() == 1){
+            hashTable[index] = null;
+            size--;
+            return true;
+        }
+
+        List<MapNode<K, V>> nodeList = hashTable[index].getNodes();
+        for(MapNode<K, V> currentNode : nodeList){
+            if(key.equals(currentNode.getKey())){
+                nodeList.remove(currentNode);
+                size--;
+                return true;
+            }
+        }
+
         return false;
     }
 

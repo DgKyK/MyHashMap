@@ -13,9 +13,6 @@ public class MapNode<K, V> {
         this.nodes = new LinkedList<>();
     }
 
-    public int hashFnction(int tableLength){
-        return hashCode() % tableLength;
-    }
     /*Getters*/
 
     public List<MapNode<K, V>> getNodes() {
