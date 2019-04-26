@@ -7,9 +7,15 @@ public class TestClass {
         test.put(4,"four");
         test.put(5,"five");
         test.put(6,"newFive");
-        test.delete(3);
-        for(String k : test){
+        try {
+            test.delete(3);
+        }catch(UnsupportedOperationException e) {
+            e.printStackTrace();
+        }
+        for(String k : test) {
             System.out.println(k);
         }
+        System.out.println("Get element : " + test.get(3) + "\n" + test.size());
+
     }
 }

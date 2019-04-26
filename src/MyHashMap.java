@@ -100,28 +100,8 @@ public class MyHashMap<K, V> implements MyMap<K, V> ,Iterable<V> {
     }
 
     @Override
-    public boolean delete(K key) {
-        int index = hashFunction(hashTable.length, key);
-        if(hashTable[index] == null){
-            return false;
-        }
-
-        if(hashTable[index].getNodes().size() == 1){
-            hashTable[index] = null;
-            size--;
-            return true;
-        }
-
-        List<MapNode<K, V>> nodeList = hashTable[index].getNodes();
-        for(MapNode<K, V> currentNode : nodeList){
-            if(key.equals(currentNode.getKey())){
-                nodeList.remove(currentNode);
-                size--;
-                return true;
-            }
-        }
-
-        return false;
+    public boolean delete(K key) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
