@@ -1,7 +1,8 @@
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class MyHashMap<K, V> implements MyMap<K, V> {
+public class MyHashMap<K, V> implements MyMap<K, V> ,Iterable<V> {
     private MapNode<K, V>[] hashTable;
     private int size = 0;
     private float loadFactor;
@@ -126,5 +127,34 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public Iterator<V> iterator() {
+        return new Iterator<>() {
+            int counter = 0;
+            MapNode<K, V>[] existValue = new MapNode[size];
+
+            @Override
+            public boolean hasNext(){
+                checkAndSetExistValue();
+                return counter < existValue.length;
+            }
+
+            private void checkAndSetExistValue(){
+                int i = 0;
+                for(MapNode<K, V> currentNode : hashTable){
+                    if(currentNode != null) {
+                        existValue[i] = currentNode;
+                        i++;
+                    }
+                }
+            }
+
+            @Override
+            public V next() {
+                return existValue[counter++].getNodes().get(0).getValue();
+            }
+        };
     }
 }

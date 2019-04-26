@@ -6,9 +6,10 @@ public class TestClass {
         test.put(3,"three");
         test.put(4,"four");
         test.put(5,"five");
-        test.put(5,"newFive");
-
-        System.out.println( test.delete(5) + "\n" + test.get(7) + "\n" + test.size());
-
+        test.put(6,"newFive");
+        test.delete(3);
+        for(String k : test){
+            System.out.println(k);
+        }
     }
 }
